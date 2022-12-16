@@ -16,6 +16,7 @@ model Notification {
   content     String
   category    String
   readAt      DateTime? //? -> Campo pode ser nulo
+  canceledAt  DateTime?
   cratedAt    DateTime  @default(now())
 
   @@index([recipientId])
