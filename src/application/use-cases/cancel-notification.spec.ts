@@ -1,29 +1,24 @@
-import { Content } from "@application/entities/content";
-import { Notification } from "@application/entities/notification";
-import { InMemoryNotificationsRepository } from "@test/repositories/in-memory-notifications-repository";
+import { makeNotification } from "@test/factories/notification-factory";
 import { CancelNotification } from "./cancel-notification"
 import { NotificationNotFound } from "./errors/notification-not-found";
+import { InMemoryNotificationsRepository } from "@test/repositories/in-memory-notifications-repository";
 
 describe('Cancelar notificação', () => {
   it('Espero que seja cancelado uma notificação', async () => {
     const notificationsRepository = new InMemoryNotificationsRepository();
     const cancelNotification = new CancelNotification(notificationsRepository);
 
-    const notification = new Notification({
-      recipientId: 'exemplo-recipient-id',
-      content: new Content('Nova solicitação de amizade'),
-      category: 'social'
-    });
+    const notification = makeNotification();
 
     await notificationsRepository.create(notification);
-    
+
     await cancelNotification.execute({
       notificationId: notification.id,
     });
 
+    //Espero que o canceledAt seja qualquer objeto do tipo Date
     expect(notificationsRepository.notifications[0].canceledAt)
       .toEqual(expect.any(Date));
-      //Espero que o canceledAt seja qualquer objeto do tipo Date
   });
 
   it('Espero que não seja cancelado uma notificação quando ela não existir', async () => {
